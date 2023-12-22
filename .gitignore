@@ -100,5 +100,6 @@ iOSInjectionProject/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
+.DS_Store
 
 # End of https://www.gitignore.io/api/xcode,swift
