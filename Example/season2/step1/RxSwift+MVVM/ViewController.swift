@@ -53,6 +53,7 @@ class ViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     f.onNext(json)
+                    f.onCompleted() // onCompleted로 아래 클로저가 사라지면서 레퍼런스 카운트 감소, 순환 참조 문제 해결가능
                 }
             }
             
@@ -85,6 +86,6 @@ class ViewController: UIViewController {
                 break
             }
         }
-        .dispose() // 위에 애니메이션 돌고 JSON 불러오게 시켜놓고 불러오기도 전에 dispose(메모리에서 해제) 시키기 떄문에 로드되지 않는다..
+        //.dispose() // 위에 애니메이션 돌고 JSON 불러오게 시켜놓고 불러오기도 전에 dispose(메모리에서 해제) 시키기 떄문에 로드되지 않는다..
     }
 }
