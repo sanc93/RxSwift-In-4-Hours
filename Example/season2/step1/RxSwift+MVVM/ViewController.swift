@@ -12,17 +12,17 @@ import UIKit
 
 let MEMBER_LIST_URL = "https://my.api.mockaroo.com/members_with_avatar.json?key=44ce18f0"
 
-class 나중에생기는데이터<T> {
-    private let task: (@escaping (T) -> Void) -> Void
-    
-    init(task: @escaping (@escaping (T) -> Void) -> Void) {
-        self.task = task
-    }
-    
-    func 나중에오면(_ f: @escaping (T) -> Void) {
-        task(f)
-    }
-}
+//class Observable<T> {
+//    private let task: (@escaping (T) -> Void) -> Void
+//    
+//    init(task: @escaping (@escaping (T) -> Void) -> Void) {
+//        self.task = task
+//    }
+//    
+//    func subscribe(_ f: @escaping (T) -> Void) {
+//        task(f)
+//    }
+//}
 
 class ViewController: UIViewController {
     @IBOutlet var timerLabel: UILabel!
@@ -73,16 +73,18 @@ class ViewController: UIViewController {
         // 나중에 데이터가 오면 .subscribe, next라는 event가 온다
         .subscribe { event in
             switch event {
+                // 데이터가 전달될때는 next로 온다
             case .next(let json):
                 self.editView.text = json
                 self.setVisibleWithAnimation(self.activityIndicator, false)
-                
+                // // 데이터가 다 전달되고 완전히 끝났을때는 Completed
             case .completed:
                 break
+                // 에러가 났을때는 error
             case .error(_):
                 break
             }
-        
         }
+        .dispose() // 위에 애니메이션 돌고 JSON 불러오게 시켜놓고 불러오기도 전에 dispose(메모리에서 해제) 시키기 떄문에 로드되지 않는다..
     }
 }
