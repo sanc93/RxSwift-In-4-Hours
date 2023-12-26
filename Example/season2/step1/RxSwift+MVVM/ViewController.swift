@@ -43,18 +43,20 @@ class ViewController: UIViewController {
             self?.view.layoutIfNeeded()
         })
     }
-
-    func downloadJson(_ url: String) -> 나중에생기는데이터<String?> { // 컴플리션이아닌 리턴값으로 전달 .. 그럼 비동기로 생기는 리턴값을 어떻게 리턴값을 만들지?
-        return 나중에생기는데이터() { f in
+    // Observable - 나중에 생기는 데이터
+    func downloadJson(_ url: String) -> Observable<String?> {
+        return Observable.create() { f in
             DispatchQueue.global().async {
                 let url = URL(string: url)!
                 let data = try! Data(contentsOf: url)
                 let json = String(data: data, encoding: .utf8)
                 
                 DispatchQueue.main.async {
-                    f(json)
+                    f.onNext(json)
                 }
             }
+            
+            return Disposables.create()
         }
      
     }
@@ -67,11 +69,20 @@ class ViewController: UIViewController {
         editView.text = ""
         self.setVisibleWithAnimation(self.activityIndicator, true)
         
-        let json:나중에생기는데이터<String?> = downloadJson(MEMBER_LIST_URL)
+        downloadJson(MEMBER_LIST_URL)
+        // 나중에 데이터가 오면 .subscribe, next라는 event가 온다
+        .subscribe { event in
+            switch event {
+            case .next(let json):
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false)
+                
+            case .completed:
+                break
+            case .error(_):
+                break
+            }
         
-        json.나중에오면 { json in
-            self.editView.text = json
-            self.setVisibleWithAnimation(self.activityIndicator, false)
         }
     }
 }
